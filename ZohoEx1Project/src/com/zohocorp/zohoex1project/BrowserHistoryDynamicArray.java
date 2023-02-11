@@ -1,6 +1,7 @@
 package com.zohocorp.zohoex1project;
 
 import java.io.*;
+import java.util.Scanner;
 
 
 class Browser {
@@ -53,38 +54,67 @@ public class BrowserHistoryDynamicArray
 	{
 		
 		BufferedReader reader =new BufferedReader(new InputStreamReader(System.in));
+		Scanner in=new Scanner(System.in);
 		
 		char c='Y' ;
 		String browserName;
-		int urlNumber;
+		int urlNumber, choice;
+		Browser googleChrome=new Browser();
+		Browser microsoftEdge=new Browser();
+		
 		
 		do
 		{
-			System.out.println("Enter the browser whose history you want to enter: ");
+			System.out.println("Enter your choice(type 1 to enter history or 2 to view the history:)");
+			choice = Integer.parseInt(reader.readLine()); 
+			System.out.println("Enter the browser whose history you want to enter/display: ");
 			browserName = reader.readLine(); 
 			
-			System.out.println("Enter the number of urls you want to add: ");
-			urlNumber = Integer.parseInt(reader.readLine());
-			String[] urlName= new String[urlNumber];
-			
-			System.out.println("Enter the URLS you want to add: ");
-			for(int i=0;i<urlNumber;i++)
+			switch(choice)
 			{
-				urlName[i] = reader.readLine();
-			}
+			case 1:
 			
-			if(browserName.equalsIgnoreCase("Google Chrome"))
-			{
-				Browser googleChrome=new Browser(urlName);
-				googleChrome.display();
+				System.out.println("Enter the number of urls you want to add: ");
+				urlNumber = Integer.parseInt(reader.readLine());
+				String[] urlName= new String[urlNumber];
+				
+				System.out.println("Enter the URLS you want to add: ");
+				for(int i=0;i<urlNumber;i++)
+				{
+					urlName[i] = reader.readLine();
+					if(browserName.equalsIgnoreCase("Google Chrome"))
+					{
+						googleChrome.addUrl(urlName[i]);
+					}
+					
+					if(browserName.equalsIgnoreCase("Microsoft Edge"))
+					{
+						microsoftEdge.addUrl(urlName[i]);
+					}
+				}
+				break;
+				
+			case 2:
+				if(browserName.equalsIgnoreCase("Google Chrome"))
+				{
+					googleChrome.display();
+				}
+				
+				else if(browserName.equalsIgnoreCase("Microsoft Edge"))
+				{
+					microsoftEdge.display();
+				}
+				break;	
+				default:
+					System.out.println("Wrong choice");
 			}
-			
-			System.out.println("Do you want to enter more history(Y/N): ");
-			c=(char)reader.read(); 
+			System.out.println("Do you want to continue(Y/N): ");
+			c=in.next().charAt(0);
 			
 		}while(c=='Y');
 		
-		
+		in.close();
+		System.out.println("Goodbye");
 
 	}
 
