@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class Browser {
-	private static ArrayList<String> url = new ArrayList<>();
+	private ArrayList<String> url = new ArrayList<>();
 	
 	Browser()
 	{
@@ -30,6 +30,7 @@ class Browser {
 	
 	public void display(int urlNo)  
 	{  
+		System.out.println(url);
 		System.out.println("Browser History \n");
 		for(int i=0;i<urlNo;i++)
 			System.out.println(url.get(i)+"\n");
@@ -132,6 +133,18 @@ class Firefox extends Browser implements MultipleAccountContainers {
 
 public class BrowserOops{
 	
+	public static Browser[] growArraySize(Browser b[], int indexAllBrowsers) {
+		if(b.length==indexAllBrowsers)
+		{
+			Browser newB[]=new Browser[indexAllBrowsers+1];
+			for(int i=0;i<indexAllBrowsers;i++)
+				newB[i]=b[i];
+			
+			b=newB;
+		}  
+		return b;
+	}
+	
 	public static void numberGoogleTab(Browser b[]){
 		int countGoogleChrome=0;
 		for(int j=0;j<b.length;j++) {
@@ -143,6 +156,7 @@ public class BrowserOops{
 	}
 	
 	
+	
 	public static void main(String[] args)throws IOException
 	{
 		
@@ -150,11 +164,11 @@ public class BrowserOops{
 		Scanner in = new Scanner(System.in);
 		
 		char c='Y' ;
-		//String browserName;
-		//int urlNumber;
+		String browserName;
+		int urlNumber;
 		//int countGoogleChrome=0;
 		int choice;
-		//int indexAllBrowsers=5;
+		int indexAllBrowsers=5;
 		
 		//MultipleAccountContainers firefoxContainer = new Firefox();
 		
@@ -180,9 +194,7 @@ public class BrowserOops{
 			
 			switch(choice)
 			{
-			/*case 1:
-				System.out.println("Enter the browser whose history you want to enter/display: ");
-				browserName = reader.readLine(); 
+			case 1:
 				System.out.println("Enter the number of urls you want to add: ");
 				urlNumber = in.nextInt();
 				String[] urlName= new String[urlNumber];
@@ -193,18 +205,13 @@ public class BrowserOops{
 					urlName[i] = reader.readLine();
 				}
 				
-				if(browserName.equalsIgnoreCase("Google Chrome"))
-				{
-					GoogleChrome tabSix=new GoogleChrome(urlName);
-					tabSix.display(urlNumber);
-					allBrowsers[indexAllBrowsers++]=tabSix;
-					browserOops.numberGoogleTab(allBrowsers);
-				}
-				
-				System.out.println("Do you want to enter more history(Y/N): ");
-				c=in.next().charAt(0);
+				GoogleChrome tabSix=new GoogleChrome(urlName);
+				tabSix.display(urlNumber);
+				allBrowsers=growArraySize(allBrowsers, indexAllBrowsers);
+				allBrowsers[indexAllBrowsers++]=tabSix;
+				numberGoogleTab(allBrowsers);
+
 				break;
-				*/
 			case 2:
 				System.out.println("The open browser tabs are :");
 				for(int j=0;j<allBrowsers.length;j++) {
