@@ -4,6 +4,7 @@ package com.zohocorp.zohoex2project;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 class Browser {
 	private ArrayList<String> url = new ArrayList<>();
 	
@@ -50,37 +51,35 @@ class GoogleChrome extends Browser{
 		super(urlHistory);
 	}
 	
-	public void setAccessibility(boolean isLocationAccessible) {
-		this.isLocationAccessible=isLocationAccessible;
-		permissionDisplay();
-		
-	}
-	public void setAccessibility(boolean isCameraAccessible,int n) {
-		this.isCameraAccessible=isCameraAccessible;
-		permissionDisplay();
-	}
-	public void setAccessibility(int n) {
-		if (n==1)
-			this.isMicrophoneAccessible=true;
-		else
-			this.isMicrophoneAccessible=false;
+	public void setAccessibility(Accessibility A, boolean  permissionOption) {
+		if (A.equals(Accessibility.LOCATION))
+				this.isLocationAccessible=permissionOption;
+		else if (A.equals(Accessibility.CAMERA))
+			this.isCameraAccessible=permissionOption;
+		else if (A.equals(Accessibility.MICROPHONE))
+			this.isMicrophoneAccessible=permissionOption;
 		permissionDisplay();
 	}
-	public void setAccessibility(boolean isLocationAccessible, boolean isCameraAccessible, boolean isMicrophoneAccessible) {
-		this.isLocationAccessible=isLocationAccessible;
-		this.isCameraAccessible=isCameraAccessible;
-		this.isMicrophoneAccessible=isMicrophoneAccessible;
+	
+	public void setAccessibility(Accessibility location, Accessibility camera, Accessibility microphone,
+			boolean[] permissionOptionArray) {
+		this.isLocationAccessible=permissionOptionArray[0];
+		this.isCameraAccessible=permissionOptionArray[1];
+		this.isMicrophoneAccessible=permissionOptionArray[2];
 		permissionDisplay();
 	}
+	
 	public void permissionDisplay() {
 		System.out.println("Location Permission:" + this.isLocationAccessible);
 		System.out.println("Camera Permission:" + this.isCameraAccessible);
 		System.out.println("Microphone Permission:" + this.isMicrophoneAccessible);
 	}
 	
+	
 	public void whoAmI() {
 		System.out.println("I am Google Chrome");
 	}
+
 }
 
 interface MultipleAccountContainers {
@@ -234,21 +233,17 @@ public class BrowserOops{
 	
 	private static void setPermissions(Browser tabOne){
 	
-		int permissionChoice,permissionNumber=0;
 		boolean permissionOption=false;
-		System.out.println("\n Set Permissions \n 1.All Permissions \n 2.Location \n 3.Camera \n 4.Microphone");
+		int permissionChoice;
+		System.out.println("\n Set Permissions \n 1.ALL \n 2.LOCATION \n 3.CAMERA \n 4.MICROPHONE");
 		System.out.println("Enter your choice:");
 		permissionChoice = in.nextInt(); 
-		if (permissionChoice==2 || permissionChoice==3 || permissionChoice==4) 
-		{
+		
+		if (permissionChoice==2 || permissionChoice==3 || permissionChoice==4) 	{
 			System.out.println("Enter permission(true/false): ");
 			permissionOption=in.nextBoolean();
-			if (permissionOption==true)
-				permissionNumber=1;
-			else
-				permissionNumber=0;
-			
 		}
+	
 		switch(permissionChoice)
 		{
 		case 1:
@@ -257,16 +252,16 @@ public class BrowserOops{
 			for(int j=0;j<3;j++) {
 				permissionOptionArray[j]=in.nextBoolean();
 			}
-			((GoogleChrome) tabOne).setAccessibility(permissionOptionArray[0],permissionOptionArray[1],permissionOptionArray[2]);
+			((GoogleChrome) tabOne).setAccessibility(Accessibility.LOCATION,Accessibility.CAMERA,Accessibility.MICROPHONE,permissionOptionArray);
 			break;
 		case 2:
-			((GoogleChrome) tabOne).setAccessibility(permissionOption);
+			((GoogleChrome) tabOne).setAccessibility(Accessibility.LOCATION,permissionOption);
 			break;
 		case 3:
-			((GoogleChrome) tabOne).setAccessibility(permissionOption,permissionNumber);
+			((GoogleChrome) tabOne).setAccessibility(Accessibility.CAMERA,permissionOption);
 			break;
 		case 4:
-			((GoogleChrome) tabOne).setAccessibility(permissionNumber);
+			((GoogleChrome) tabOne).setAccessibility(Accessibility.MICROPHONE,permissionOption);
 			break;
 		default:
 			System.out.println("Wrong choice");
