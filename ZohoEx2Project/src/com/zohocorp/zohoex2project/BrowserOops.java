@@ -1,9 +1,6 @@
 package com.zohocorp.zohoex2project;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -30,9 +27,8 @@ class Browser {
 	
 	public void display(int urlNo)  
 	{  
-		System.out.println(url);
 		System.out.println("Browser History \n");
-		for(int i=0;i<urlNo;i++)
+		for(int i=0;i<url.size();i++)
 			System.out.println(url.get(i)+"\n");
 	}
 	
@@ -145,32 +141,18 @@ public class BrowserOops{
 		return b;
 	}
 	
-	public static void numberGoogleTab(Browser b[]){
-		int countGoogleChrome=0;
-		for(int j=0;j<b.length;j++) {
-			if(b[j] instanceof GoogleChrome) {
-				countGoogleChrome++;
-			}
-		}
-		System.out.println("Number of GoogleChrome tabs: "+ countGoogleChrome);
-	}
 	
-	
-	
-	public static void main(String[] args)throws IOException
+	public static Scanner in = new Scanner(System.in); //globally declared scanner is static since non-static variable i/p cannot be referenced from static content
+	public static void main(String[] args)
 	{
 		
-		BufferedReader reader =new BufferedReader(new InputStreamReader(System.in));
-		Scanner in = new Scanner(System.in);
 		
 		char c='Y' ;
-		String browserName;
-		int urlNumber;
-		//int countGoogleChrome=0;
 		int choice;
 		int indexAllBrowsers=5;
 		
-		//MultipleAccountContainers firefoxContainer = new Firefox();
+		
+		Browser temp=new Browser();
 		
 		Browser tabOne=new GoogleChrome();
 		Browser tabTwo=new Firefox();
@@ -190,27 +172,15 @@ public class BrowserOops{
 			System.out.println("\n Main Menu \n 1.Add URLs \n 2.Find my Browser name \n 3.Set Permissions"
 					+ "\n 4.Number of Google Tabs \n 5.Container \n 6.Quit");
 			System.out.println("Enter your choice: ");
-			choice = Integer.parseInt(reader.readLine()); 
+			choice = in.nextInt();
 			
 			switch(choice)
 			{
 			case 1:
-				System.out.println("Enter the number of urls you want to add: ");
-				urlNumber = in.nextInt();
-				String[] urlName= new String[urlNumber];
-				
-				System.out.println("Enter the URLS you want to add: ");
-				for(int i=0;i<urlNumber;i++)
-				{
-					urlName[i] = reader.readLine();
-				}
-				
-				GoogleChrome tabSix=new GoogleChrome(urlName);
-				tabSix.display(urlNumber);
+				temp=addHistory();
 				allBrowsers=growArraySize(allBrowsers, indexAllBrowsers);
-				allBrowsers[indexAllBrowsers++]=tabSix;
+				allBrowsers[indexAllBrowsers++]=temp;
 				numberGoogleTab(allBrowsers);
-
 				break;
 			case 2:
 				System.out.println("The open browser tabs are :");
@@ -220,68 +190,13 @@ public class BrowserOops{
 				break;
 				
 			case 3:
-				int permissionChoice,permissionNumber=0;
-				boolean permissionOption=false;
-				System.out.println("\n Set Permissions \n 1.All Permissions \n 2.Location \n 3.Camera \n 4.Microphone");
-				System.out.println("Enter your choice:");
-				permissionChoice = Integer.parseInt(reader.readLine()); 
-				if (permissionChoice==2 || permissionChoice==3 || permissionChoice==4) 
-				{
-					System.out.println("Enter permission(true/false): ");
-					permissionOption=in.nextBoolean();
-					if (permissionOption==true)
-						permissionNumber=1;
-					else
-						permissionNumber=0;
-					
-				}
-				switch(permissionChoice)
-				{
-				case 1:
-					boolean permissionOptionArray[]=new boolean[3];
-					System.out.println("Enter permission for location, camera and microphone: ");
-					for(int j=0;j<3;j++) {
-						permissionOptionArray[j]=in.nextBoolean();
-					}
-					((GoogleChrome) tabOne).setAccessibility(permissionOptionArray[0],permissionOptionArray[1],permissionOptionArray[2]);
-					break;
-				case 2:
-					((GoogleChrome) tabOne).setAccessibility(permissionOption);
-					break;
-				case 3:
-					((GoogleChrome) tabOne).setAccessibility(permissionOption,permissionNumber);
-					break;
-				case 4:
-					((GoogleChrome) tabOne).setAccessibility(permissionNumber);
-					break;
-				default:
-					System.out.println("Wrong choice");
-				}
+				setPermissions(tabOne);
 				break;
 			case 4:
 				numberGoogleTab(allBrowsers);
 				break;
 			case 5:
-				String containerName;
-				int containerChoice;
-				System.out.println("\n Container \n 1.Add Container \n 2.Remove Container");
-				System.out.println("Enter your choice:");
-				containerChoice = Integer.parseInt(reader.readLine()); 
-				switch(containerChoice)
-				{
-				case 1:
-					System.out.println("Enter the name of container you want to add: ");
-					containerName = reader.readLine();
-					((Firefox) tabTwo).addContainer(containerName);
-					break;
-				case 2:
-					System.out.println("Enter the name of container you want to remove: ");
-					containerName = reader.readLine();
-					((Firefox) tabTwo).removeContainer(containerName);
-					break;
-				default:
-					System.out.println("Wrong choice");
-				}
+				editContainer(tabTwo);
 				break;
 			case 6:
 				System.out.println("Do you want to continue(Y/N): ");
@@ -296,5 +211,101 @@ public class BrowserOops{
 		in.close();
 
 	}
+	
+	
+	private static Browser addHistory() { //add urls to browser 
+		
+		int urlNumber;
+		
+		System.out.println("Enter the number of urls you want to add: ");
+		urlNumber = in.nextInt();
+		String[] urlName= new String[urlNumber];
+		
+		System.out.println("Enter the URLS you want to add: ");
+		for(int i=0;i<urlNumber;i++)
+		{
+			urlName[i] = in.next();
+		}
+		
+		GoogleChrome tabSix=new GoogleChrome(urlName);
+		tabSix.display(urlNumber);
+		return (tabSix);
+	}
+	
+	private static void setPermissions(Browser tabOne){
+	
+		int permissionChoice,permissionNumber=0;
+		boolean permissionOption=false;
+		System.out.println("\n Set Permissions \n 1.All Permissions \n 2.Location \n 3.Camera \n 4.Microphone");
+		System.out.println("Enter your choice:");
+		permissionChoice = in.nextInt(); 
+		if (permissionChoice==2 || permissionChoice==3 || permissionChoice==4) 
+		{
+			System.out.println("Enter permission(true/false): ");
+			permissionOption=in.nextBoolean();
+			if (permissionOption==true)
+				permissionNumber=1;
+			else
+				permissionNumber=0;
+			
+		}
+		switch(permissionChoice)
+		{
+		case 1:
+			boolean permissionOptionArray[]=new boolean[3];
+			System.out.println("Enter permission for location, camera and microphone: ");
+			for(int j=0;j<3;j++) {
+				permissionOptionArray[j]=in.nextBoolean();
+			}
+			((GoogleChrome) tabOne).setAccessibility(permissionOptionArray[0],permissionOptionArray[1],permissionOptionArray[2]);
+			break;
+		case 2:
+			((GoogleChrome) tabOne).setAccessibility(permissionOption);
+			break;
+		case 3:
+			((GoogleChrome) tabOne).setAccessibility(permissionOption,permissionNumber);
+			break;
+		case 4:
+			((GoogleChrome) tabOne).setAccessibility(permissionNumber);
+			break;
+		default:
+			System.out.println("Wrong choice");
+		}
+	}
+	
+	public static void numberGoogleTab(Browser b[]){
+		int countGoogleChrome=0;
+		for(int j=0;j<b.length;j++) {
+			if(b[j] instanceof GoogleChrome) {
+				countGoogleChrome++;
+			}
+		}
+		System.out.println("Number of GoogleChrome tabs: "+ countGoogleChrome);
+	}
+	
+	public static void editContainer(Browser tabTwo){
+	
+			String containerName;
+			int containerChoice;
+			System.out.println("\n Container \n 1.Add Container \n 2.Remove Container");
+			System.out.println("Enter your choice:");
+			containerChoice = in.nextInt(); 
+			switch(containerChoice)
+			{
+			case 1:
+				System.out.println("Enter the name of container you want to add: ");
+				containerName = in.next();
+				((Firefox) tabTwo).addContainer(containerName);
+				break;
+			case 2:
+				System.out.println("Enter the name of container you want to remove: ");
+				containerName = in.next();
+				((Firefox) tabTwo).removeContainer(containerName);
+				break;
+			default:
+				System.out.println("Wrong choice");
+			}
+	}
+
 }
 
